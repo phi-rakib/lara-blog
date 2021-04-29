@@ -5,12 +5,19 @@ namespace App\Http\Controllers;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegistrationRequest;
 use App\Http\Resources\AuthResource;
-use App\Models\User;
+use App\Repositories\User\UserRepositoryInterface;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
 class AuthController extends Controller
 {
+    protected $userRepository;
+
+    public function __construct(UserRepositoryInterface $userRepository)
+    {
+        $this->userRepository = $userRepository;
+    }
+
     public function login(LoginRequest $request)
     {
         $request->validated();
@@ -27,7 +34,7 @@ class AuthController extends Controller
                 );
         }
 
-        $user = User::where('email', $request['email'])->firstOrFail();
+        $user = $this->userRepository->searchByMail($request['email']);
 
         $token = $user->createToken('auth_token')->plainTextToken;
 
@@ -42,7 +49,7 @@ class AuthController extends Controller
         $input = $request->all();
         $input['password'] = bcrypt($input['password']);
 
-        $user = User::create($input);
+        $user = $this->userRepository->create($input);
 
         $token = $user->createToken('MyAuthApp')->plainTextToken;
 
