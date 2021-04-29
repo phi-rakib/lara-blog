@@ -36,7 +36,7 @@ class AuthController extends Controller
 
         $user = $this->userRepository->searchByMail($request['email']);
 
-        $token = $user->createToken('auth_token')->plainTextToken;
+        $token = $this->userRepository->generateApiToken($user);
 
         return (new AuthResource($user))
             ->additional(["token" => $token]);
@@ -47,11 +47,12 @@ class AuthController extends Controller
         $request->validated();
 
         $input = $request->all();
-        $input['password'] = bcrypt($input['password']);
+
+        $input['password'] = $this->userRepository->getPasswordHash($input['password']);
 
         $user = $this->userRepository->create($input);
 
-        $token = $user->createToken('MyAuthApp')->plainTextToken;
+        $token = $this->userRepository->generateApiToken($user);
 
         return (new AuthResource($user))
             ->additional(["token" => $token]);

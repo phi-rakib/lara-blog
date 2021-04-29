@@ -15,4 +15,14 @@ class UserRepository implements UserRepositoryInterface
     {
         return User::where('email', $email)->firstOrFail();
     }
+
+    public function getPasswordHash(string $password)
+    {
+        return bcrypt($password);
+    }
+
+    public function generateApiToken(User $user)
+    {
+        return $user->createToken('MyAuthApp')->plainTextToken;
+    }
 }
