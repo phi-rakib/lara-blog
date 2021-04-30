@@ -3,17 +3,19 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\PostResource;
+use App\Http\Controllers\ApiController;
 use App\Http\Requests\StorePostRequest;
 use Illuminate\Support\Facades\Response;
 use App\Repositories\Post\PostRepositoryInterface;
 
-class PostController extends Controller
+class PostController extends ApiController
 {
     protected $postRepository;
 
     public function __construct(PostRepositoryInterface $postRepository)
     {
         $this->postRepository = $postRepository;
+        $this->middleware('auth:sanctum')->except(['index', 'show']);
     }
 
     public function index()
@@ -23,9 +25,7 @@ class PostController extends Controller
 
     public function store(StorePostRequest $request)
     {
-        $request->validated();
-
-        $payload = $request->only(['title', 'body']);
+        $payload = $request->validated();
 
         return (new PostResource($this->postRepository->create($payload)))
             ->additional(["message" => "Created successfully"]);
@@ -38,9 +38,7 @@ class PostController extends Controller
 
     public function update(StorePostRequest $request, $id)
     {
-        $request->validated();
-
-        $payload = $request->only(['title', 'body']);
+        $payload = $request->validated();
 
         return (new PostResource($this->postRepository->update($id, $payload)))
             ->additional(["message" => "Updated successfully"]);
@@ -49,6 +47,6 @@ class PostController extends Controller
     public function destroy($id)
     {
         $this->postRepository->delete($id);
-        return Response::make("", 204);
+        return $this->respondNoContent();
     }
 }

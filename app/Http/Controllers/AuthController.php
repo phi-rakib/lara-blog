@@ -3,13 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\LoginRequest;
-use App\Http\Requests\RegistrationRequest;
 use App\Http\Resources\AuthResource;
-use App\Repositories\User\UserRepositoryInterface;
 use Illuminate\Support\Facades\Auth;
-use Symfony\Component\HttpFoundation\Response;
+use App\Http\Controllers\ApiController;
+use App\Http\Requests\RegistrationRequest;
+use App\Repositories\User\UserRepositoryInterface;
 
-class AuthController extends Controller
+class AuthController extends ApiController
 {
     protected $userRepository;
 
@@ -20,19 +20,10 @@ class AuthController extends Controller
 
     public function login(LoginRequest $request)
     {
-        $request->validated();
+        $input = $request->validated();
 
-        $input = $request->only(['email', 'password']);
-
-        if (!Auth::attempt($input)) {
-            return response()
-                ->json(
-                    [
-                        'message' => 'Invalid login details',
-                    ],
-                    Response::HTTP_UNAUTHORIZED
-                );
-        }
+        if (!Auth::attempt($input)) 
+            return $this->respondUnauthorized(['message' => 'Invalid login details']);
 
         $user = $this->userRepository->searchByMail($request['email']);
 
@@ -44,9 +35,7 @@ class AuthController extends Controller
 
     public function registration(RegistrationRequest $request)
     {
-        $request->validated();
-
-        $input = $request->all();
+        $input = $request->validated();
 
         $input['password'] = $this->userRepository->getPasswordHash($input['password']);
 
