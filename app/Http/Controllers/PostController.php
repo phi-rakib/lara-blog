@@ -46,7 +46,7 @@ class PostController extends ApiController
             ->additional($this->messageUpdated($this->modelName));
     }
 
-    public function destroy($id)
+    public function destroy(UpdatePostRequest $request, $id)
     {
         $this->postRepository->delete($id);
         return $this->respondNoContent();

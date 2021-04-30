@@ -16,9 +16,16 @@ class UpdatePostRequest extends FormRequest
 
     public function rules()
     {
-        return [
-            'title' => ['required', 'max:255'],
-            'body' => ['required'],
-        ];
+        switch ($this->getMethod()) {
+            case 'PUT':
+            case 'put':
+                return [
+                    'title' => ['required', 'max:255'],
+                    'body' => ['required'],
+                ];
+            case 'DELETE':
+            case 'delete':
+                return [];
+        }
     }
 }

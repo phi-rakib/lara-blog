@@ -137,8 +137,7 @@ class PostControllerTest extends TestCase
         $this->getAuth($this->createUser());
 
         $this->deleteJson('/api/posts/0', $this->getHeader())
-            ->assertStatus(Response::HTTP_NOT_FOUND)
-            ->assertJsonStructure(['error']);
+            ->assertStatus(Response::HTTP_FORBIDDEN);
     }
 
     public function testPostUpdatedSuccessfully()
@@ -229,6 +228,26 @@ class PostControllerTest extends TestCase
         $payload['id'] = $post->id;
 
         $this->putJson('/api/posts/' . $post->id, $payload, $this->getHeader())
+            ->assertStatus(Response::HTTP_FORBIDDEN);
+    }
+
+    public function testPostDeleteByAnotherUser()
+    {
+        $user = User::factory()->create();
+        $this->getAuth($user);
+
+        $post = Post::factory()
+            ->count(1)
+            ->for($user)
+            ->create()
+            ->first();
+
+        $user2 = User::factory()->create();
+        $this->getAuth($user2);
+
+        $payload['id'] = $post->id;
+
+        $this->deleteJson('/api/posts/' . $post->id, $this->getHeader())
             ->assertStatus(Response::HTTP_FORBIDDEN);
     }
 
