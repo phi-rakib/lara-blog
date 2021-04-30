@@ -2,10 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Resources\PostResource;
 use App\Http\Controllers\ApiController;
-use App\Http\Requests\StorePostRequest;
-use App\Http\Requests\UpdatePostRequest;
+use App\Http\Requests\PostRequest;
+use App\Http\Resources\PostResource;
 use App\Repositories\Post\PostRepositoryInterface;
 
 class PostController extends ApiController
@@ -25,7 +24,7 @@ class PostController extends ApiController
         return PostResource::collection($this->postRepository->all());
     }
 
-    public function store(StorePostRequest $request)
+    public function store(PostRequest $request)
     {
         $payload = $request->validated();
 
@@ -38,7 +37,7 @@ class PostController extends ApiController
         return new PostResource($this->postRepository->get($id));
     }
 
-    public function update(UpdatePostRequest $request, $id)
+    public function update(PostRequest $request, $id)
     {
         $payload = $request->validated();
 
@@ -46,7 +45,7 @@ class PostController extends ApiController
             ->additional($this->messageUpdated($this->modelName));
     }
 
-    public function destroy(UpdatePostRequest $request, $id)
+    public function destroy(PostRequest $request, $id)
     {
         $this->postRepository->delete($id);
         return $this->respondNoContent();
