@@ -47,7 +47,7 @@ class PostControllerTest extends TestCase
                         "title" => strtoupper($post->title),
                         "body" => $post->body,
                     ],
-                    "message" => "Created successfully",
+                    "message" => "Post Created successfully",
                 ]
             );
     }
@@ -166,7 +166,7 @@ class PostControllerTest extends TestCase
             ->assertJson(
                 [
                     "data" => $payload,
-                    "message" => "Updated successfully",
+                    "message" => "Post Updated successfully",
                 ]
             );
 
