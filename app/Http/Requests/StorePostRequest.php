@@ -21,7 +21,8 @@ class StorePostRequest extends FormRequest
         ];
     }
 
-    public function messages() {
+    public function messages()
+    {
         return [
             'title.required' => 'You need to a :attribute to your blog',
             'body.required' => 'Your blog needs a :attribute',
@@ -32,7 +33,7 @@ class StorePostRequest extends FormRequest
     {
         return [
             'title' => 'heading',
-            'body' => 'description'
+            'body' => 'description',
         ];
     }
 }
