@@ -2,15 +2,15 @@
 
 namespace Tests\Feature;
 
-use Tests\TestCase;
 use App\Models\User;
-use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Symfony\Component\HttpFoundation\Response;
+use Tests\TestCase;
 
 class AuthControllerTest extends TestCase
 {
     use RefreshDatabase;
-    
+
     public function testMustEnterEmailAndPassword()
     {
         $response = $this->postJson('/api/login', [], ['Accept' => 'application/json']);
@@ -142,5 +142,19 @@ class AuthControllerTest extends TestCase
                 ],
                 "token",
             ]);
+    }
+
+    public function testUserLoginFailed()
+    {
+        $payload = [
+            'email' => 'sample@test.com',
+            'password' => 'abcxyz',
+        ];
+
+        $response = $this->postJson('/api/login', $payload, ['Accept' => 'application/json']);
+
+        $response
+            ->assertStatus(Response::HTTP_UNAUTHORIZED)
+            ->assertJson(["message" => "Invalid login details"]);
     }
 }
