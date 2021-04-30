@@ -174,9 +174,16 @@ class PostControllerTest extends TestCase
 
     public function testPostUpdateForInvalidData()
     {
-        $this->getAuth($this->createUser());
+        $user = User::factory()->create();
+        $this->getAuth($user);
 
-        $this->putJson('/api/posts/1', [], $this->getHeader())
+        $post = Post::factory()
+            ->count(1)
+            ->for($user)
+            ->create()
+            ->first();
+
+        $this->putJson("/api/posts/$post->id", [], $this->getHeader())
             ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
             ->assertJsonStructure(['errors']);
 
@@ -195,8 +202,34 @@ class PostControllerTest extends TestCase
             ->toArray();
 
         $this->putJson('/api/posts/0', $payload, $this->getHeader())
-            ->assertStatus(Response::HTTP_NOT_FOUND)
-            ->assertJsonStructure(['error']);
+            ->assertStatus(Response::HTTP_FORBIDDEN);
+    }
+
+    public function testPostUpdatedByAnotherUser()
+    {
+        $user = User::factory()->create();
+        $this->getAuth($user);
+
+        $post = Post::factory()
+            ->count(1)
+            ->for($user)
+            ->create()
+            ->first();
+
+        $user2 = User::factory()->create();
+        $this->getAuth($user2);
+
+        $payload = Post::factory()
+            ->count(1)
+            ->for($user2)
+            ->make()
+            ->first()
+            ->toArray();
+
+        $payload['id'] = $post->id;
+
+        $this->putJson('/api/posts/' . $post->id, $payload, $this->getHeader())
+            ->assertStatus(Response::HTTP_FORBIDDEN);
     }
 
 }
