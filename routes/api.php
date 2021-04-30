@@ -5,10 +5,16 @@ use App\Http\Controllers\PostController;
 use Illuminate\Support\Facades\Route;
 use Symfony\Component\HttpFoundation\Response;
 
+Route::name('api.')->group(function() {
+    Route::name('user.')->group(function() {
+        Route::post('/login', [AuthController::class, 'login'])->name('login');
+        Route::post('/registration', [AuthController::class, 'registration'])->name('registration');
+    });
+});
+
 Route::resource('posts', PostController::class);
 
-Route::post('/login', [AuthController::class, 'login']);
-Route::post('/registration', [AuthController::class, 'registration']);
+
 
 
 
