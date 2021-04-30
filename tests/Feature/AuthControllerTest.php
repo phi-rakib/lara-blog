@@ -13,7 +13,7 @@ class AuthControllerTest extends TestCase
 
     public function testMustEnterEmailAndPassword()
     {
-        $response = $this->postJson('/api/login', [], ['Accept' => 'application/json']);
+        $response = $this->postJson(route('api.user.login'), [], ['Accept' => 'application/json']);
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
             ->assertJson([
@@ -32,7 +32,7 @@ class AuthControllerTest extends TestCase
             'email' => 'abcasdf',
         ];
 
-        $response = $this->postJson('/api/login', $payload, ['Accept' => 'application/json']);
+        $response = $this->postJson(route('api.user.login'), $payload, ['Accept' => 'application/json']);
 
         $response
             ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
@@ -54,7 +54,7 @@ class AuthControllerTest extends TestCase
             'confirm_password' => 'abcxyz',
         ];
 
-        $response = $this->postJson('/api/registration', $payload, ['Accept' => 'application/json']);
+        $response = $this->postJson(route('api.user.registration'), $payload, ['Accept' => 'application/json']);
 
         $response
             ->assertStatus(Response::HTTP_CREATED)
@@ -73,7 +73,7 @@ class AuthControllerTest extends TestCase
     public function testRegistionWithMissingData()
     {
         $payload = [];
-        $this->postJson('/api/registration', $payload, ['Accept' => 'application/json'])
+        $this->postJson(route('api.user.registration'), $payload, ['Accept' => 'application/json'])
             ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
             ->assertJson([
                 "message" => "The given data was invalid.",
@@ -102,7 +102,7 @@ class AuthControllerTest extends TestCase
             'confirm_password' => 'xyzabc',
         ];
 
-        $response = $this->postJson('/api/registration', $payload, ['Accept' => 'application/json']);
+        $response = $this->postJson(route('api.user.registration'), $payload, ['Accept' => 'application/json']);
 
         $response
             ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
@@ -128,7 +128,7 @@ class AuthControllerTest extends TestCase
             'password' => 'abcxyz',
         ];
 
-        $response = $this->postJson('/api/login', $payload, ['Accept' => 'application/json']);
+        $response = $this->postJson(route('api.user.login'), $payload, ['Accept' => 'application/json']);
 
         $response
             ->assertStatus(Response::HTTP_OK)
@@ -151,7 +151,7 @@ class AuthControllerTest extends TestCase
             'password' => 'abcxyz',
         ];
 
-        $response = $this->postJson('/api/login', $payload, ['Accept' => 'application/json']);
+        $response = $this->postJson(route('api.user.login'), $payload, ['Accept' => 'application/json']);
 
         $response
             ->assertStatus(Response::HTTP_UNAUTHORIZED)

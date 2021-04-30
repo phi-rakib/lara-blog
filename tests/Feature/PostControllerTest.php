@@ -28,7 +28,7 @@ class PostControllerTest extends TestCase
         );
     }
 
-    public function createUser() 
+    public function createUser()
     {
         return User::factory()->create();
     }
@@ -39,7 +39,7 @@ class PostControllerTest extends TestCase
 
         $post = Post::factory()->make();
 
-        $this->postJson('/api/posts', $post->toArray(), $this->getHeader())
+        $this->postJson(route('posts.store'), $post->toArray(), $this->getHeader())
             ->assertStatus(Response::HTTP_CREATED)
             ->assertJson(
                 [
@@ -60,7 +60,7 @@ class PostControllerTest extends TestCase
             'tiltle' => 'test title',
         ];
 
-        $this->postJson('/api/posts', $post, $this->getHeader())
+        $this->postJson(route('posts.store'), $post, $this->getHeader())
             ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
             ->assertJsonStructure([
                 'message',
@@ -78,7 +78,7 @@ class PostControllerTest extends TestCase
             ->for($user)
             ->create();
 
-        $this->getJson('/api/posts', $this->getHeader())
+        $this->getJson(route('posts.index'), $this->getHeader())
             ->assertStatus(Response::HTTP_OK)
             ->assertJson(
                 [
@@ -98,7 +98,7 @@ class PostControllerTest extends TestCase
             ->create()
             ->first();
 
-        $this->getJson('/api/posts/' . $post->id, $this->getHeader())
+        $this->getJson(route('posts.show', ['post' => $post->id]), $this->getHeader())
             ->assertStatus(Response::HTTP_OK)
             ->assertJson(
                 [
@@ -111,7 +111,7 @@ class PostControllerTest extends TestCase
     {
         $this->getAuth($this->createUser());
 
-        $this->getJson('/api/posts/0', $this->getHeader())
+        $this->getJson(route('posts.show', ['post' => 0]), $this->getHeader())
             ->assertStatus(Response::HTTP_NOT_FOUND)
             ->assertJsonStructure(['error']);
     }
@@ -127,7 +127,7 @@ class PostControllerTest extends TestCase
             ->create()
             ->first();
 
-        $this->deleteJson('/api/posts/' . $post->id, $this->getHeader())
+        $this->deleteJson(route('posts.destroy', ['post' => $post->id]), $this->getHeader())
             ->assertStatus(Response::HTTP_NO_CONTENT)
             ->assertNoContent();
     }
@@ -136,7 +136,7 @@ class PostControllerTest extends TestCase
     {
         $this->getAuth($this->createUser());
 
-        $this->deleteJson('/api/posts/0', $this->getHeader())
+        $this->deleteJson(route('posts.destroy', ['post' => 0]), $this->getHeader())
             ->assertStatus(Response::HTTP_FORBIDDEN);
     }
 
@@ -160,7 +160,7 @@ class PostControllerTest extends TestCase
 
         $payload['id'] = $post->id;
 
-        $this->putJson('/api/posts/' . $post->id, $payload, $this->getHeader())
+        $this->putJson(route('posts.update', ['post' => $post->id]), $payload, $this->getHeader())
             ->assertStatus(Response::HTTP_OK)
             ->assertJson(
                 [
@@ -168,7 +168,6 @@ class PostControllerTest extends TestCase
                     "message" => "Post Updated successfully",
                 ]
             );
-
     }
 
     public function testPostUpdateForInvalidData()
@@ -182,7 +181,7 @@ class PostControllerTest extends TestCase
             ->create()
             ->first();
 
-        $this->putJson("/api/posts/$post->id", [], $this->getHeader())
+        $this->putJson(route('posts.update', ['post' => $post->id]), [], $this->getHeader())
             ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
             ->assertJsonStructure(['errors']);
 
@@ -200,7 +199,7 @@ class PostControllerTest extends TestCase
             ->first()
             ->toArray();
 
-        $this->putJson('/api/posts/0', $payload, $this->getHeader())
+        $this->putJson(route('posts.update', ['post' => 0]), $payload, $this->getHeader())
             ->assertStatus(Response::HTTP_FORBIDDEN);
     }
 
@@ -227,7 +226,7 @@ class PostControllerTest extends TestCase
 
         $payload['id'] = $post->id;
 
-        $this->putJson('/api/posts/' . $post->id, $payload, $this->getHeader())
+        $this->putJson(route('posts.update', ['post' => $post->id]), $payload, $this->getHeader())
             ->assertStatus(Response::HTTP_FORBIDDEN);
     }
 
@@ -247,7 +246,7 @@ class PostControllerTest extends TestCase
 
         $payload['id'] = $post->id;
 
-        $this->deleteJson('/api/posts/' . $post->id, $this->getHeader())
+        $this->deleteJson(route('posts.destroy', ['post' => $post->id]), $this->getHeader())
             ->assertStatus(Response::HTTP_FORBIDDEN);
     }
 
