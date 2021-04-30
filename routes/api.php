@@ -5,9 +5,7 @@ use App\Http\Controllers\PostController;
 use Illuminate\Support\Facades\Route;
 use Symfony\Component\HttpFoundation\Response;
 
-Route::middleware('auth:sanctum')->group(function() {
-    Route::resource('posts', PostController::class);
-});
+Route::resource('posts', PostController::class);
 
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/registration', [AuthController::class, 'registration']);
