@@ -20,4 +20,14 @@ class ApiController extends Controller
     {
         return $this->respond($data, Response::HTTP_UNAUTHORIZED);
     }
+
+    protected function messageCreated(string $model = "")
+    {
+        return ["message" => "$model Created successfully"];
+    }
+
+    protected function messageUpdated(string $model = "")
+    {
+        return ["message" => "$model Updated successfully"];
+    }
 }
