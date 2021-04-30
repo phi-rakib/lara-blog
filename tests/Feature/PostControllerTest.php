@@ -20,17 +20,22 @@ class PostControllerTest extends TestCase
         ];
     }
 
-    public function getAuth()
+    public function getAuth($user)
     {
         Sanctum::actingAs(
-            User::factory()->create(),
+            $user,
             ['*']
         );
     }
 
+    public function createUser() 
+    {
+        return User::factory()->create();
+    }
+
     public function testPostCreatedSuccessfully()
     {
-        $this->getAuth();
+        $this->getAuth($this->createUser());
 
         $post = Post::factory()->make();
 
@@ -49,7 +54,7 @@ class PostControllerTest extends TestCase
 
     public function testPostCreateForMissingData()
     {
-        $this->getAuth();
+        $this->getAuth($this->createUser());
 
         $post = [
             'tiltle' => 'test title',
@@ -65,50 +70,46 @@ class PostControllerTest extends TestCase
 
     public function testPostRetrievedSuccessfully()
     {
-        $this->getAuth();
+        $user = User::factory()->create();
+        $this->getAuth($user);
 
         $posts = Post::factory()
             ->count(5)
-            ->create()->toArray();
-
-        $map = array_map(function ($post) {
-            $post['created_at'] = date('Y-m-d H:i:s', strtotime($post['created_at']));
-            unset($post['updated_at']);
-            return $post;
-        }, $posts);
+            ->for($user)
+            ->create();
 
         $this->getJson('/api/posts', $this->getHeader())
             ->assertStatus(Response::HTTP_OK)
             ->assertJson(
                 [
-                    "data" => $map,
+                    "data" => $posts->toArray(),
                 ]
             );
     }
 
     public function testPostRetrieveByIdSuccessfully()
     {
-        $this->getAuth();
+        $user = User::factory()->create();
+        $this->getAuth($user);
 
         $post = Post::factory()
+            ->count(1)
+            ->for($user)
             ->create()
-            ->toArray();
+            ->first();
 
-        $post['created_at'] = date('Y-m-d H:i:s', strtotime($post['created_at']));
-        unset($post['updated_at']);
-
-        $this->getJson('/api/posts/' . $post['id'], $this->getHeader())
+        $this->getJson('/api/posts/' . $post->id, $this->getHeader())
             ->assertStatus(Response::HTTP_OK)
             ->assertJson(
                 [
-                    "data" => $post,
+                    "data" => $post->toArray(),
                 ]
             );
     }
 
     public function testPostRetrieveForMissingData()
     {
-        $this->getAuth();
+        $this->getAuth($this->createUser());
 
         $this->getJson('/api/posts/0', $this->getHeader())
             ->assertStatus(Response::HTTP_NOT_FOUND)
@@ -117,9 +118,15 @@ class PostControllerTest extends TestCase
 
     public function testPostDeletedSuccessfully()
     {
-        $this->getAuth();
+        $user = User::factory()->create();
+        $this->getAuth($user);
 
-        $post = Post::factory()->create();
+        $post = Post::factory()
+            ->count(1)
+            ->for($user)
+            ->create()
+            ->first();
+
         $this->deleteJson('/api/posts/' . $post->id, $this->getHeader())
             ->assertStatus(Response::HTTP_NO_CONTENT)
             ->assertNoContent();
@@ -127,7 +134,7 @@ class PostControllerTest extends TestCase
 
     public function testPostDeleteForMissingData()
     {
-        $this->getAuth();
+        $this->getAuth($this->createUser());
 
         $this->deleteJson('/api/posts/0', $this->getHeader())
             ->assertStatus(Response::HTTP_NOT_FOUND)
@@ -136,10 +143,22 @@ class PostControllerTest extends TestCase
 
     public function testPostUpdatedSuccessfully()
     {
-        $this->getAuth();
+        $user = User::factory()->create();
+        $this->getAuth($user);
 
-        $post = Post::factory()->create();
-        $payload = Post::factory()->make()->toArray();
+        $post = Post::factory()
+            ->count(1)
+            ->for($user)
+            ->create()
+            ->first();
+
+        $payload = Post::factory()
+            ->count(1)
+            ->for($user)
+            ->make()
+            ->first()
+            ->toArray();
+
         $payload['id'] = $post->id;
 
         $this->putJson('/api/posts/' . $post->id, $payload, $this->getHeader())
@@ -155,7 +174,7 @@ class PostControllerTest extends TestCase
 
     public function testPostUpdateForInvalidData()
     {
-        $this->getAuth();
+        $this->getAuth($this->createUser());
 
         $this->putJson('/api/posts/1', [], $this->getHeader())
             ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
@@ -165,9 +184,15 @@ class PostControllerTest extends TestCase
 
     public function testPostUpdateForMissingData()
     {
-        $this->getAuth();
+        $user = User::factory()->create();
+        $this->getAuth($user);
 
-        $payload = Post::factory()->make()->toArray();
+        $payload = Post::factory()
+            ->count(1)
+            ->for($user)
+            ->make()
+            ->first()
+            ->toArray();
 
         $this->putJson('/api/posts/0', $payload, $this->getHeader())
             ->assertStatus(Response::HTTP_NOT_FOUND)
