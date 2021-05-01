@@ -25,4 +25,9 @@ class Post extends Model
     {
         $this->attributes['title'] = strtolower($value);
     }
+
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
+    }
 }
