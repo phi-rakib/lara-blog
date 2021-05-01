@@ -30,4 +30,9 @@ class ApiController extends Controller
     {
         return ["message" => "$model Updated successfully"];
     }
+
+    protected function respondNotFound()
+    {
+        return $this->respond("Not Found", Response::HTTP_NOT_FOUND);
+    }
 }
