@@ -93,10 +93,8 @@ class PostControllerTest extends TestCase
         $this->getAuth($user);
 
         $post = Post::factory()
-            ->count(1)
             ->for($user)
-            ->create()
-            ->first();
+            ->create();
 
         $this->getJson(route('posts.show', ['post' => $post->id]), $this->getHeader())
             ->assertStatus(Response::HTTP_OK)
@@ -122,10 +120,8 @@ class PostControllerTest extends TestCase
         $this->getAuth($user);
 
         $post = Post::factory()
-            ->count(1)
             ->for($user)
-            ->create()
-            ->first();
+            ->create();
 
         $this->deleteJson(route('posts.destroy', ['post' => $post->id]), $this->getHeader())
             ->assertStatus(Response::HTTP_NO_CONTENT)
@@ -146,16 +142,12 @@ class PostControllerTest extends TestCase
         $this->getAuth($user);
 
         $post = Post::factory()
-            ->count(1)
             ->for($user)
-            ->create()
-            ->first();
+            ->create();
 
         $payload = Post::factory()
-            ->count(1)
             ->for($user)
             ->make()
-            ->first()
             ->toArray();
 
         $payload['id'] = $post->id;
@@ -176,10 +168,8 @@ class PostControllerTest extends TestCase
         $this->getAuth($user);
 
         $post = Post::factory()
-            ->count(1)
             ->for($user)
-            ->create()
-            ->first();
+            ->create();
 
         $this->putJson(route('posts.update', ['post' => $post->id]), [], $this->getHeader())
             ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
@@ -193,10 +183,8 @@ class PostControllerTest extends TestCase
         $this->getAuth($user);
 
         $payload = Post::factory()
-            ->count(1)
             ->for($user)
             ->make()
-            ->first()
             ->toArray();
 
         $this->putJson(route('posts.update', ['post' => 0]), $payload, $this->getHeader())
@@ -209,19 +197,15 @@ class PostControllerTest extends TestCase
         $this->getAuth($user);
 
         $post = Post::factory()
-            ->count(1)
             ->for($user)
-            ->create()
-            ->first();
+            ->create();
 
         $user2 = User::factory()->create();
         $this->getAuth($user2);
 
         $payload = Post::factory()
-            ->count(1)
             ->for($user2)
             ->make()
-            ->first()
             ->toArray();
 
         $payload['id'] = $post->id;
@@ -236,10 +220,8 @@ class PostControllerTest extends TestCase
         $this->getAuth($user);
 
         $post = Post::factory()
-            ->count(1)
             ->for($user)
-            ->create()
-            ->first();
+            ->create();
 
         $user2 = User::factory()->create();
         $this->getAuth($user2);
