@@ -25,7 +25,7 @@ class AuthController extends ApiController
             return $this->respondUnauthorized(['message' => 'Invalid login details']);
         }
 
-        $user = $this->userRepository->searchByMail($request['email']);
+        $user = $this->userRepository->searchByMail($input['email']);
 
         $token = $this->userRepository->generateApiToken($user);
 
