@@ -21,7 +21,7 @@ class CommentController extends ApiController
     public function __construct(CommentRepositoryInterface $commentRepository)
     {
         $this->commentRepository = $commentRepository;
-        $this->middleware('auth:sanctum')->except(['index', 'show']);
+        $this->middleware('auth:sanctum')->except(['index']);
         $this->modelName = "Comment";
     }
 
