@@ -6,6 +6,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 class ApiController extends Controller
 {
+    protected $modelName;
+
     protected function respond($data = [], $status = 200, array $headers = [])
     {
         return response()->json($data, $status, $headers);

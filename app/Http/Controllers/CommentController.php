@@ -10,12 +10,6 @@ use Illuminate\Http\Request;
 
 class CommentController extends ApiController
 {
-    /**
-     * Model name
-     *
-     * @var string
-     */
-    private $modelName;
     private $commentRepository;
 
     public function __construct(CommentRepositoryInterface $commentRepository)

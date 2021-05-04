@@ -10,7 +10,6 @@ use App\Repositories\Post\PostRepositoryInterface;
 class PostController extends ApiController
 {
     protected $postRepository;
-    private $modelName;
 
     public function __construct(PostRepositoryInterface $postRepository)
     {
