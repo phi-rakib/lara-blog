@@ -13,8 +13,8 @@ Route::name('api.')->group(function () {
     });
 });
 
-Route::resource('posts', PostController::class);
-Route::resource('posts.comments', CommentController::class)
+Route::apiResource('posts', PostController::class);
+Route::apiResource('posts.comments', CommentController::class)
     ->except(['show'])
     ->shallow();
 
