@@ -3,11 +3,17 @@
 namespace App\Repositories\Post;
 
 use App\Models\Post;
-use App\Models\User;
-use Illuminate\Support\Facades\Auth;
+use App\Repositories\Auth\AuthRepositoryInterface;
 
 class PostRepository implements PostRepositoryInterface
 {
+    protected $authRepository;
+
+    public function __construct(AuthRepositoryInterface $authRepository)
+    {
+        $this->authRepository = $authRepository;
+    }
+
     private function selectedColumns(): array
     {
         return ['id', 'title', 'body', 'user_id', 'created_at', 'updated_at'];
@@ -25,10 +31,7 @@ class PostRepository implements PostRepositoryInterface
 
     public function create($post)
     {
-        /**
-         * @var User
-         */
-        $user = Auth::user();
+        $user = $this->authRepository->getAuthUser();
         return $user->posts()->create($post);
     }
 

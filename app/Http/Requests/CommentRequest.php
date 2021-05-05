@@ -4,9 +4,18 @@ namespace App\Http\Requests;
 
 use App\Models\Comment;
 use Illuminate\Foundation\Http\FormRequest;
+use App\Repositories\Auth\AuthRepositoryInterface;
 
 class CommentRequest extends FormRequest
 {
+    protected $authRepository;
+
+    public function __construct(AuthRepositoryInterface $authRepository)
+    {
+        parent::__construct();
+        $this->authRepository = $authRepository;
+    }
+    
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -24,7 +33,7 @@ class CommentRequest extends FormRequest
                 case 'DELETE':
                 case 'delete':
                     $comment = Comment::find($this->route('comment'));
-                    return $comment && $comment->user_id == auth()->id();
+                    return $comment && $comment->user_id == $this->authRepository->getAuthId();
             }
         }
         return false;

@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Repositories\Auth\AuthRepository;
+use App\Repositories\Auth\AuthRepositoryInterface;
 use App\Repositories\Comment\CommentRepository;
 use App\Repositories\Comment\CommentRepositoryInterface;
 use App\Repositories\Post\PostRepository;
@@ -16,6 +18,7 @@ class RepositoryServiceProvider extends ServiceProvider
         UserRepositoryInterface::class => UserRepository::class,
         PostRepositoryInterface::class => PostRepository::class,
         CommentRepositoryInterface::class => CommentRepository::class,
+        AuthRepositoryInterface::class => AuthRepository::class,
     ];
 
     /**

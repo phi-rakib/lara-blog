@@ -3,10 +3,18 @@
 namespace App\Repositories\Comment;
 
 use App\Models\Comment;
+use App\Repositories\Auth\AuthRepositoryInterface;
 use App\Repositories\Comment\CommentRepositoryInterface;
 
 class CommentRepository implements CommentRepositoryInterface
 {
+    
+    protected $authRepository;
+
+    public function __construct(AuthRepositoryInterface $authRepository)
+    {
+        $this->authRepository = $authRepository;
+    }
 
     public function all($postId)
     {
@@ -18,7 +26,7 @@ class CommentRepository implements CommentRepositoryInterface
     public function create($data, $postId)
     {
         $comment = new Comment($data);
-        $comment->user()->associate(auth()->id());
+        $comment->user()->associate($this->authRepository->getAuthId());
         $comment->post()->associate($postId);
         $comment->save();
         return $comment;
