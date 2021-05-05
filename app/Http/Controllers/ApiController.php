@@ -6,7 +6,12 @@ use Symfony\Component\HttpFoundation\Response;
 
 class ApiController extends Controller
 {
-    protected $modelName;
+    private $modelName;
+
+    public function __construct($modelName)
+    {
+        $this->modelName = $modelName;
+    }
 
     protected function respond($data = [], $status = 200, array $headers = [])
     {
@@ -23,14 +28,14 @@ class ApiController extends Controller
         return $this->respond($data, Response::HTTP_UNAUTHORIZED);
     }
 
-    protected function messageCreated(string $model = "")
+    protected function messageCreated()
     {
-        return ["message" => "$model Created successfully"];
+        return ["message" => "$this->modelName Created successfully"];
     }
 
-    protected function messageUpdated(string $model = "")
+    protected function messageUpdated()
     {
-        return ["message" => "$model Updated successfully"];
+        return ["message" => "$this->modelName Updated successfully"];
     }
 
     protected function respondNotFound()

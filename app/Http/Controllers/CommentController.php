@@ -4,9 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CommentRequest;
 use App\Http\Resources\CommentResource;
-use App\Models\Comment;
 use App\Repositories\Comment\CommentRepositoryInterface;
-use Illuminate\Http\Request;
 
 class CommentController extends ApiController
 {
@@ -14,9 +12,9 @@ class CommentController extends ApiController
 
     public function __construct(CommentRepositoryInterface $commentRepository)
     {
+        parent::__construct("Comment");
         $this->commentRepository = $commentRepository;
         $this->middleware('auth:sanctum')->except(['index']);
-        $this->modelName = "Comment";
     }
 
     /**
@@ -40,7 +38,7 @@ class CommentController extends ApiController
     public function store(CommentRequest $request, $postId)
     {
         return (new CommentResource($this->commentRepository->create($request->validated(), $postId)))
-            ->additional($this->messageCreated($this->modelName));
+            ->additional($this->messageCreated());
     }
 
     /**
@@ -53,7 +51,7 @@ class CommentController extends ApiController
     public function update(CommentRequest $request, $id)
     {
         return (new CommentResource($this->commentRepository->update($id, $request->validated())))
-            ->additional($this->messageUpdated($this->modelName));
+            ->additional($this->messageUpdated());
     }
 
     /**
