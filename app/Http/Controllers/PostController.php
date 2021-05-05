@@ -13,7 +13,6 @@ class PostController extends ApiController
 
     public function __construct(PostRepositoryInterface $postRepository)
     {
-        parent::__construct("Post");
         $this->postRepository = $postRepository;
         $this->middleware('auth:sanctum')->except(['index', 'show']);
     }
@@ -28,7 +27,7 @@ class PostController extends ApiController
         $payload = $request->validated();
 
         return (new PostResource($this->postRepository->create($payload)))
-            ->additional($this->messageCreated());
+            ->additional($this->messageCreated("Post"));
     }
 
     public function show($id)
@@ -41,7 +40,7 @@ class PostController extends ApiController
         $payload = $request->validated();
 
         return (new PostResource($this->postRepository->update($id, $payload)))
-            ->additional($this->messageUpdated());
+            ->additional($this->messageUpdated("Post"));
     }
 
     public function destroy(PostRequest $request, $id)

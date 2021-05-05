@@ -17,7 +17,6 @@ class AuthController extends ApiController
         AuthRepositoryInterface $authRepository,
         UserRepositoryInterface $userRepository
     ) {
-        parent::__construct("Auth");
         $this->authRepository = $authRepository;
         $this->userRepository = $userRepository;
     }

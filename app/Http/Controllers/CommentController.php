@@ -12,7 +12,6 @@ class CommentController extends ApiController
 
     public function __construct(CommentRepositoryInterface $commentRepository)
     {
-        parent::__construct("Comment");
         $this->commentRepository = $commentRepository;
         $this->middleware('auth:sanctum')->except(['index']);
     }
@@ -38,7 +37,7 @@ class CommentController extends ApiController
     public function store(CommentRequest $request, $postId)
     {
         return (new CommentResource($this->commentRepository->create($request->validated(), $postId)))
-            ->additional($this->messageCreated());
+            ->additional($this->messageCreated("Comment"));
     }
 
     /**
@@ -51,7 +50,7 @@ class CommentController extends ApiController
     public function update(CommentRequest $request, $id)
     {
         return (new CommentResource($this->commentRepository->update($id, $request->validated())))
-            ->additional($this->messageUpdated());
+            ->additional($this->messageUpdated("Comment"));
     }
 
     /**
