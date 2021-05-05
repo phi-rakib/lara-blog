@@ -32,7 +32,7 @@ class AuthController extends ApiController
 
         $user = $this->userRepository->searchByMail($input['email']);
 
-        $token = $this->userRepository->generateApiToken($user);
+        $token = $this->authRepository->generateApiToken($user);
 
         return (new AuthResource($user))
             ->additional(["token" => $token]);
@@ -42,11 +42,11 @@ class AuthController extends ApiController
     {
         $input = $request->validated();
 
-        $input['password'] = $this->userRepository->getPasswordHash($input['password']);
+        $input['password'] = $this->authRepository->getPasswordHash($input['password']);
 
         $user = $this->userRepository->create($input);
 
-        $token = $this->userRepository->generateApiToken($user);
+        $token = $this->authRepository->generateApiToken($user);
 
         return (new AuthResource($user))
             ->additional(["token" => $token]);

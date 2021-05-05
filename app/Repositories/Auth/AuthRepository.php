@@ -22,4 +22,14 @@ class AuthRepository implements AuthRepositoryInterface
     {
         return Auth::attempt($user);
     }
+
+    public function getPasswordHash(string $password)
+    {
+        return bcrypt($password);
+    }
+
+    public function generateApiToken(User $user)
+    {
+        return $user->createToken('MyAuthApp')->plainTextToken;
+    }
 }
