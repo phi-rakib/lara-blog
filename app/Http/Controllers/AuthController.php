@@ -5,16 +5,20 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\ApiController;
 use App\Http\Requests\AuthRequest;
 use App\Http\Resources\AuthResource;
+use App\Repositories\Auth\AuthRepositoryInterface;
 use App\Repositories\User\UserRepositoryInterface;
-use Illuminate\Support\Facades\Auth;
 
 class AuthController extends ApiController
 {
+    protected $authRepository;
     protected $userRepository;
 
-    public function __construct(UserRepositoryInterface $userRepository)
-    {
+    public function __construct(
+        AuthRepositoryInterface $authRepository,
+        UserRepositoryInterface $userRepository
+    ) {
         parent::__construct("Auth");
+        $this->authRepository = $authRepository;
         $this->userRepository = $userRepository;
     }
 
@@ -22,7 +26,7 @@ class AuthController extends ApiController
     {
         $input = $request->validated();
 
-        if (!Auth::attempt($input)) {
+        if (!$this->authRepository->authAttempt($input)) {
             return $this->respondUnauthorized(['message' => 'Invalid login details']);
         }
 
