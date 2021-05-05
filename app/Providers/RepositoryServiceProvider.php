@@ -18,6 +18,9 @@ class RepositoryServiceProvider extends ServiceProvider
         UserRepositoryInterface::class => UserRepository::class,
         PostRepositoryInterface::class => PostRepository::class,
         CommentRepositoryInterface::class => CommentRepository::class,
+    ];
+
+    public $singletons = [
         AuthRepositoryInterface::class => AuthRepository::class,
     ];
 
