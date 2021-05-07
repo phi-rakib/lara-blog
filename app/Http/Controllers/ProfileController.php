@@ -2,21 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Repositories\Auth\AuthRepository;
 use App\Repositories\Profile\ProfileRepositoryInterface;
 use Illuminate\Http\Request;
 
 class ProfileController extends Controller
 {
-    private $authRepository;
     private $profileRepository;
-    
-    public function __construct(
-        AuthRepository $authRepository,
-        ProfileRepositoryInterface $profileRepository
-        )
+
+    public function __construct(ProfileRepositoryInterface $profileRepository)
     {
-        $this->authRepository = $authRepository;
         $this->profileRepository = $profileRepository;
     }
 
