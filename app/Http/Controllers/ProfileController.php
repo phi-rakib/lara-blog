@@ -12,6 +12,7 @@ class ProfileController extends Controller
     public function __construct(ProfileRepositoryInterface $profileRepository)
     {
         $this->profileRepository = $profileRepository;
+        $this->middleware('auth:sanctum')->except(['show']);
     }
 
     public function store(Request $request)
