@@ -1,11 +1,10 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\PostController;
-use Tests\Feature\ProfileControllerTest;
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProfileController;
+use Illuminate\Support\Facades\Route;
 use Symfony\Component\HttpFoundation\Response;
 
 Route::name('api.')->group(function () {
@@ -16,10 +15,13 @@ Route::name('api.')->group(function () {
 });
 
 Route::apiResource('posts', PostController::class);
+
 Route::apiResource('posts.comments', CommentController::class)
     ->except(['show'])
     ->shallow();
-Route::apiResource('profiles', ProfileController::class);
+
+Route::apiResource('profiles', ProfileController::class)
+    ->except(['index', 'delete']);
 
 Route::fallback(function () {
     return response()->json(
