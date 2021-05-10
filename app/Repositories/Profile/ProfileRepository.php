@@ -2,6 +2,7 @@
 
 namespace App\Repositories\Profile;
 
+use App\Models\Profile;
 use App\Repositories\Auth\AuthRepositoryInterface;
 
 class ProfileRepository implements ProfileRepositoryInterface
@@ -17,5 +18,10 @@ class ProfileRepository implements ProfileRepositoryInterface
     {
         $user = $this->authRepository->getAuthUser();
         return $user->profile()->create($profile);
+    }
+
+    public function get($id)
+    {
+        return Profile::findOrFail($id);
     }
 }

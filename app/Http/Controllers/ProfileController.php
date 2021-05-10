@@ -20,4 +20,10 @@ class ProfileController extends Controller
         $input = $request->only('body', 'website_url');
         return $this->profileRepository->create($input);
     }
+
+    public function show($id)
+    {
+        return $this->profileRepository->get($id);
+    }
+
 }

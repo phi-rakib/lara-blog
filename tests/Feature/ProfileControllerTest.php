@@ -48,4 +48,20 @@ class ProfileControllerTest extends TestCase
             );
 
     }
+
+    public function testProfileRetrieveByIdSuccessfully()
+    {
+        $this->withoutExceptionHandling();
+        $user = User::factory()->create();
+        $this->getAuth($user);
+
+        $profile = Profile::factory()
+            ->for($user)
+            ->create();
+
+        $response = $this->getJson(route('profiles.show', ['profile' => $profile->id]), $this->getHeader());
+
+        $response->assertStatus(Response::HTTP_OK)
+            ->assertJson($profile->toArray());
+    }
 }
