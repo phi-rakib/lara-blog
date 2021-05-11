@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ProfileRequest;
 use App\Repositories\Profile\ProfileRepositoryInterface;
 use Illuminate\Http\Request;
 
@@ -15,7 +16,7 @@ class ProfileController extends Controller
         $this->middleware('auth:sanctum')->except(['show']);
     }
 
-    public function store(Request $request)
+    public function store(ProfileRequest $request)
     {
         $input = $request->only('body', 'website_url');
         return $this->profileRepository->create($input);
