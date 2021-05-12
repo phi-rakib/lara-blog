@@ -49,6 +49,25 @@ class ProfileControllerTest extends TestCase
 
     }
 
+    public function testProfileCreateForMissingData()
+    {
+        $user = User::factory()->create();
+        $this->getAuth($user);
+
+        $profile = [
+            'body' => 'this is a test body',
+        ];
+
+        $response = $this->postJson(route('profiles.store'), $profile, $this->getHeader());
+
+        $response
+            ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
+            ->assertJsonStructure([
+                'message',
+                'errors' => ['website_url'],
+            ]);
+    }
+
     public function testProfileRetrieveByIdSuccessfully()
     {
         $this->withoutExceptionHandling();
