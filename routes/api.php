@@ -16,9 +16,9 @@ Route::name('api.')->group(function () {
 
 Route::apiResource('posts', PostController::class);
 
-Route::apiResource('posts.comments', CommentController::class)
-    ->except(['show'])
-    ->shallow();
+Route::get('post/comments/{postId}', [CommentController::class, 'commentsByPostId']);
+
+Route::apiResource('comments', CommentController::class);
 
 Route::apiResource('profiles', ProfileController::class)
     ->except(['index', 'delete']);
@@ -28,6 +28,6 @@ Route::fallback(function () {
         [
             'message' => 'Page Not Found. If error persists, contact administrator of the site',
         ],
-        Response::HTTP_NOT_FOUND
+        404
     );
 });
