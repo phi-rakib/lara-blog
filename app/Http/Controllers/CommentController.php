@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CommentRequest;
 use App\Http\Resources\CommentResource;
+use App\Models\Comment;
 use App\Repositories\Comment\CommentRepositoryInterface;
 
 class CommentController extends ApiController
@@ -13,7 +14,7 @@ class CommentController extends ApiController
     public function __construct(CommentRepositoryInterface $commentRepository)
     {
         $this->commentRepository = $commentRepository;
-        $this->middleware('auth:sanctum')->except(['index']);
+        $this->middleware('auth:sanctum')->except(['index', 'commentsByPostId']);
     }
 
     /**
@@ -21,10 +22,20 @@ class CommentController extends ApiController
      *
      * @return \Illuminate\Http\Response
      */
-    public function index($postId)
+    public function index()
     {
-        $comments = $this->commentRepository->all($postId);
+        $comments = $this->commentRepository->all();
         return $comments->isEmpty() ? $this->respondNotFound() : CommentResource::collection($comments);
+    }
+
+    public function show(Comment $comment)
+    {
+        return $comment;
+    }
+
+    public function commentsByPostId($postId)
+    {
+        return $this->commentRepository->commentsByPostId($postId);
     }
 
     /**
