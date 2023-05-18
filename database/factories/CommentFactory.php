@@ -24,7 +24,8 @@ class CommentFactory extends Factory
     {
         return [
             'body' => $this->faker->paragraph(),
-            // 'post_id' => Post::factory()->create()->id,
+            'post_id' => rand(1, 10),
+            'user_id' => rand(1, 10),
         ];
     }
 }
