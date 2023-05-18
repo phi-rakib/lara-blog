@@ -8,7 +8,7 @@ use App\Repositories\Comment\CommentRepositoryInterface;
 
 class CommentRepository implements CommentRepositoryInterface
 {
-    
+
     protected $authRepository;
 
     public function __construct(AuthRepositoryInterface $authRepository)
@@ -16,10 +16,9 @@ class CommentRepository implements CommentRepositoryInterface
         $this->authRepository = $authRepository;
     }
 
-    public function all($postId)
+    public function all()
     {
         return Comment::with('user:id,name')
-            ->where('post_id', $postId)
             ->get();
     }
 
@@ -43,5 +42,11 @@ class CommentRepository implements CommentRepositoryInterface
         $comment = Comment::findOrFail($id);
         $comment->update($data);
         return $comment;
+    }
+
+    public function commentsByPostId($postId)
+    {
+        return Comment::where('post_id', $postId)
+            ->get();
     }
 }
