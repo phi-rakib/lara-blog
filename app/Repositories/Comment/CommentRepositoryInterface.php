@@ -4,13 +4,15 @@ namespace App\Repositories\Comment;
 
 interface CommentRepositoryInterface
 {
-    public function all();
+    public function getAllComments();
 
-    public function create($data, $postId);
+    public function create($data);
 
     public function delete($id);
 
-    public function update($id, $payload);
+    public function update($id, $data);
+
+    public function commentsById($commentId, array $includes);
 
     public function commentsByPostId($postId);
 }

@@ -3,45 +3,24 @@
 namespace App\Repositories\Comment;
 
 use App\Models\Comment;
-use App\Repositories\Auth\AuthRepositoryInterface;
+use App\Repositories\BaseRepository;
 use App\Repositories\Comment\CommentRepositoryInterface;
 
-class CommentRepository implements CommentRepositoryInterface
+class CommentRepository extends BaseRepository implements CommentRepositoryInterface
 {
-
-    protected $authRepository;
-
-    public function __construct(AuthRepositoryInterface $authRepository)
+    public function __construct()
     {
-        $this->authRepository = $authRepository;
+        parent::__construct(new Comment());
     }
 
-    public function all()
+    public function getAllComments()
     {
-        return Comment::with('user:id,name')
-            ->get();
+        return parent::all(['user:id,name'])->get();
     }
 
-    public function create($data, $postId)
+    public function commentsById($id, $includes = [])
     {
-        $comment = new Comment($data);
-        $comment->user()->associate($this->authRepository->getAuthId());
-        $comment->post()->associate($postId);
-        $comment->save();
-        return $comment;
-    }
-
-    public function delete($id)
-    {
-        $comment = Comment::findOrFail($id);
-        $comment->delete();
-    }
-
-    public function update($id, $data)
-    {
-        $comment = Comment::findOrFail($id);
-        $comment->update($data);
-        return $comment;
+        return parent::show($id, $includes)->firstOrFail();
     }
 
     public function commentsByPostId($postId)

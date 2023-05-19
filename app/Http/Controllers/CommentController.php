@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\CommentRequest;
-use App\Http\Resources\CommentResource;
 use App\Models\Comment;
 use App\Repositories\Comment\CommentRepositoryInterface;
 
@@ -14,7 +13,7 @@ class CommentController extends ApiController
     public function __construct(CommentRepositoryInterface $commentRepository)
     {
         $this->commentRepository = $commentRepository;
-        $this->middleware('auth:sanctum')->except(['index', 'commentsByPostId']);
+        $this->middleware('auth:sanctum')->only(['store', 'update', 'destroy']);
     }
 
     /**
@@ -24,13 +23,12 @@ class CommentController extends ApiController
      */
     public function index()
     {
-        $comments = $this->commentRepository->all();
-        return $comments->isEmpty() ? $this->respondNotFound() : CommentResource::collection($comments);
+        return $this->commentRepository->getAllComments();
     }
 
-    public function show(Comment $comment)
+    public function show($commentId)
     {
-        return $comment;
+        return $this->commentRepository->commentsById($commentId, ['user:id,name']);
     }
 
     public function commentsByPostId($postId)
@@ -45,10 +43,9 @@ class CommentController extends ApiController
      * @param int $post
      * @return \Illuminate\Http\Response
      */
-    public function store(CommentRequest $request, $postId)
+    public function store(CommentRequest $request)
     {
-        return (new CommentResource($this->commentRepository->create($request->validated(), $postId)))
-            ->additional($this->messageCreated("Comment"));
+        return $this->commentRepository->create($request->all());
     }
 
     /**
@@ -60,8 +57,7 @@ class CommentController extends ApiController
      */
     public function update(CommentRequest $request, $id)
     {
-        return (new CommentResource($this->commentRepository->update($id, $request->validated())))
-            ->additional($this->messageUpdated("Comment"));
+        $this->commentRepository->update($id, $request->all());
     }
 
     /**
@@ -71,9 +67,8 @@ class CommentController extends ApiController
      * @param int $id
      * @return void
      */
-    public function destroy(CommentRequest $request, $id)
+    public function destroy($id)
     {
         $this->commentRepository->delete($id);
-        return $this->respondNoContent();
     }
 }
