@@ -9,21 +9,15 @@ class Post extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['title', 'body'];
+    protected $fillable = [
+        'title', 
+        'body',
+        'user_id',
+    ];
 
     public function user()
     {
         return $this->belongsTo(User::class);
-    }
-
-    public function getTitleAttribute($value)
-    {
-        return strtoupper($value);
-    }
-
-    public function setTitleAttribute($value)
-    {
-        $this->attributes['title'] = strtolower($value);
     }
 
     public function comments()
@@ -34,5 +28,20 @@ class Post extends Model
     public function image()
     {
         return $this->morphOne(Image::class, 'imageable');
+    }
+
+    public function tags()
+    {
+        return $this->belongsToMany(Tag::class);
+    }
+
+    public function getTitleAttribute($value)
+    {
+        return strtoupper($value);
+    }
+
+    public function setTitleAttribute($value)
+    {
+        $this->attributes['title'] = strtolower($value);
     }
 }
